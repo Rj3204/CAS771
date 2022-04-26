@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import os
 import six.moves.urllib as urllib
@@ -7,24 +5,18 @@ import sys
 import tarfile
 import tensorflow as tf
 import zipfile
-
 from collections import defaultdict
 from io import StringIO
 from matplotlib import pyplot as plt
 from PIL import Image
-
-
 from utils import label_map_util
-
 from utils import visualization_utils as vis_util
 MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
-
 NUM_CLASSES = 90
-
 if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
 	print ('Downloading the model')
 	opener = urllib.request.URLopener()
@@ -84,14 +76,8 @@ with detection_graph.as_default():
           category_index,
           use_normalized_coordinates=True,
           line_thickness=8)
-#      plt.figure(figsize=IMAGE_SIZE)
-#      plt.imshow(image_np)
       cv2.imshow('image',cv2.resize(image_np,(1280,960)))
       if cv2.waitKey(25) & 0xFF == ord('q'):
           cv2.destroyAllWindows()
           cap.release()
           break
-
-
-
-
