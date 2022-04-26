@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-# test harness for evaluating models on the cifar10 dataset
 import sys
 import json
 from tensorflow import keras
@@ -20,38 +13,20 @@ from tensorflow.keras.optimizers import SGD
 
 optimizer = keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)  # replace "lr" with "learning_rate"
 
-# load dataset
 (trainX, trainy), (testX, testy) = cifar10.load_data()
 
-# summarize loaded dataset
+
 print('Test: X=%s, y=%s' % (testX.shape, testy.shape))
 
-# plot first few images
 for i in range(9):
-    
-# define subplot
     pyplot.subplot(330 + 1 + i)
     
-# plot raw pixel data
     pyplot.imshow(trainX[i])
     
-# show the figure
 pyplot.show()
 
-
-# In[2]:
-
-
-# load dataset
 (trainX, trainY), (testX, testY) = cifar10.load_data()
-
-
-# In[3]:
-
-
 from tensorflow.keras.utils import to_categorical
-
-# one hot encode target values
 trainY = to_categorical(trainY)
 testY = to_categorical(testY)
 
@@ -61,34 +36,17 @@ testY = to_categorical(testY)
 
 # load train and test dataset
 def load_dataset():
-    # load dataset
     (trainX, trainY), (testX, testY) = cifar10.load_data()
-    # one hot encode target values
     trainY = to_categorical(trainY)
     testY = to_categorical(testY)
     return trainX, trainY, testX, testY
-
-
-# In[5]:
-
-
-# scale pixels
 def prep_pixels(train, test):
-    # convert from integers to floats
     train_norm = train.astype('float32')
     test_norm = test.astype('float32')
-
-    # normalize to range 0-1
     train_norm = train_norm / 255.0
     test_norm = test_norm / 255.0
 
     return train_norm, test_norm
-
-
-# In[6]:
-
-
-#VGG2 Model
 def define_model():
     model = Sequential()
     model.add(Conv2D(32, (3, 3), activation='relu', kernel_initializer='he_uniform', padding='same', input_shape=(32, 32, 3)))
@@ -104,20 +62,14 @@ def define_model():
     opt = SGD(learning_rate=0.001, momentum=0.9)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     return model
-
-
-# In[7]:
-
-
-# plot diagnostic learning curves
 def summarize_diagnostics(history):
-    # plot loss
+    #  loss
     pyplot.subplot(211)
     pyplot.title('Cross Entropy Loss')
     pyplot.plot(history.history['loss'], color='blue', label='train')
     pyplot.plot(history.history['val_loss'], color='orange', label='test')
     
-    # plot accuracy
+    # accuracy
     pyplot.subplot(212)
     pyplot.title('Classification Accuracy')
     pyplot.plot(history.history['accuracy'], color='blue', label='train')
@@ -127,45 +79,13 @@ def summarize_diagnostics(history):
     filename = sys.argv[0].split('/')[-1]
     pyplot.savefig(filename + '_plot.png')
     pyplot.close()
- 
-
-
-# In[8]:
-
-
-# run the test harness for evaluating a model
 
 def run_test_harness():
-    # load dataset
     trainX, trainY, testX, testY = load_dataset()
-    
-    # prepare pixel data
     trainX, testX = prep_pixels(trainX, testX)
-    
-    # define model
     model = define_model()
-
-    # fit model
     history = model.fit(trainX, trainY, epochs=10, batch_size=64, validation_data=(testX, testY), verbose=0)
-
-    # evaluate model
     _, acc = model.evaluate(testX, testY, verbose=0)
     print('> %.3f' % (acc * 100.0))
-    
-    # learning curves
     summarize_diagnostics(history)
- 
-
-
-# In[9]:
-
-
-# entry point, run the test harness
 print(run_test_harness()) 
-
-
-# In[ ]:
-
-
-
-
