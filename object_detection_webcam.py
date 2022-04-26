@@ -17,27 +17,13 @@ from PIL import Image
 from utils import label_map_util
 
 from utils import visualization_utils as vis_util
-
-
-# # Model preparation 
-# Any model exported using the `export_inference_graph.py` tool can be loaded here simply by changing `PATH_TO_CKPT` to point to a new .pb file.  
-# By default we use an "SSD with Mobilenet" model here. See the [detection model zoo](https://github.com/tensorflow/models/blob/master/object_detection/g3doc/detection_model_zoo.md) for a list of other models that can be run out-of-the-box with varying speeds and accuracies.
-
-# What model to download.
 MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
-
-# Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
-
-# List of the strings that is used to add correct label for each box.
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 
 NUM_CLASSES = 90
-
-
-# ## Download Model
 
 if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
 	print ('Downloading the model')
@@ -52,8 +38,6 @@ if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
 else:
 	print ('Model already exists')
 
-# ## Load a (frozen) Tensorflow model into memory.
-
 detection_graph = tf.Graph()
 with detection_graph.as_default():
   od_graph_def = tf.compat.v1.GraphDef()
@@ -61,10 +45,6 @@ with detection_graph.as_default():
     serialized_graph = fid.read()
     od_graph_def.ParseFromString(serialized_graph)
     tf.import_graph_def(od_graph_def, name='')
-
-
-# ## Loading label map
-# Label maps map indices to category names, so that when our convolution network predicts `5`, we know that this corresponds to `airplane`.  Here we use internal utility functions, but anything that returns a dictionary mapping integers to appropriate string labels would be fine
 
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
@@ -75,7 +55,7 @@ category_index = label_map_util.create_category_index(categories)
 import cv2
 cap = cv2.VideoCapture(0)
 
-# Running the tensorflow session
+# tensorflow session
 with detection_graph.as_default():
   with tf.compat.v1.Session(graph=detection_graph) as sess:
    ret = True
