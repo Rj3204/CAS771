@@ -10,7 +10,6 @@ from keras.layers import MaxPooling2D
 from keras.layers import Dense
 from keras.layers import Flatten
 from tensorflow.keras.optimizers import SGD
-
 optimizer = keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)  # replace "lr" with "learning_rate"
 (trainX, trainy), (testX, testy) = cifar10.load_data()
 print('Test: X=%s, y=%s' % (testX.shape, testy.shape))
@@ -56,7 +55,6 @@ def summarize_diagnostics(history):
     pyplot.title('Cross Entropy Loss')
     pyplot.plot(history.history['loss'], color='blue', label='train')
     pyplot.plot(history.history['val_loss'], color='orange', label='test')
-    
     #accuracy
     pyplot.subplot(212)
     pyplot.title('Classification Accuracy')
